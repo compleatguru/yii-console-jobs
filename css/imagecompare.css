@@ -1,0 +1,7 @@
+.imagecompare {  width:380px; 
+                /* border: 1px solid black; */
+                margin:auto;
+}
+.horizontal {float:left;}
+.vertical {display:block;}
+.vs.vertical { display:block; width: 300px; }

@@ -1,0 +1,1614 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Started on 2013-12-05 09:20:35
+
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = off;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET escape_string_warning = off;
+
+--
+-- TOC entry 1946 (class 1262 OID 371891)
+-- Dependencies: 1945
+-- Name: creative; Type: COMMENT; Schema: -; Owner: creative
+--
+
+COMMENT ON DATABASE creative IS 'Creative Survey';
+
+
+--
+-- TOC entry 528 (class 2612 OID 16386)
+-- Name: plpgsql; Type: PROCEDURAL LANGUAGE; Schema: -; Owner: postgres
+--
+
+CREATE PROCEDURAL LANGUAGE plpgsql;
+
+
+ALTER PROCEDURAL LANGUAGE plpgsql OWNER TO postgres;
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 145 (class 1259 OID 372342)
+-- Dependencies: 1855 1856 3
+-- Name: creative_project; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE creative_project (
+    creative_project_id integer NOT NULL,
+    creative_user_id integer NOT NULL,
+    category_id integer NOT NULL,
+    template_id integer NOT NULL,
+    project_status integer NOT NULL,
+    launch_date timestamp without time zone,
+    close_date timestamp without time zone,
+    create_date timestamp without time zone DEFAULT now() NOT NULL,
+    update_date timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.creative_project OWNER TO creative;
+
+--
+-- TOC entry 152 (class 1259 OID 372529)
+-- Dependencies: 3
+-- Name: creative_project_attribute_answer; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE creative_project_attribute_answer (
+    creative_project_id integer NOT NULL,
+    question_id integer NOT NULL,
+    uid character varying(16) NOT NULL,
+    attribute_id integer NOT NULL,
+    update_date timestamp without time zone DEFAULT now() NOT NULL,
+    country_id integer
+);
+
+
+ALTER TABLE public.creative_project_attribute_answer OWNER TO creative;
+
+--
+-- TOC entry 149 (class 1259 OID 372499)
+-- Dependencies: 3
+-- Name: creative_project_attribute_question; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE creative_project_attribute_question (
+    creative_project_id integer NOT NULL,
+    question_id integer NOT NULL,
+    media_file text
+);
+
+
+ALTER TABLE public.creative_project_attribute_question OWNER TO creative;
+
+--
+-- TOC entry 148 (class 1259 OID 372497)
+-- Dependencies: 149 3
+-- Name: creative_project_attribute_question_question_id_seq; Type: SEQUENCE; Schema: public; Owner: creative
+--
+
+CREATE SEQUENCE creative_project_attribute_question_question_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.creative_project_attribute_question_question_id_seq OWNER TO creative;
+
+--
+-- TOC entry 1949 (class 0 OID 0)
+-- Dependencies: 148
+-- Name: creative_project_attribute_question_question_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: creative
+--
+
+ALTER SEQUENCE creative_project_attribute_question_question_id_seq OWNED BY creative_project_attribute_question.question_id;
+
+
+--
+-- TOC entry 1950 (class 0 OID 0)
+-- Dependencies: 148
+-- Name: creative_project_attribute_question_question_id_seq; Type: SEQUENCE SET; Schema: public; Owner: creative
+--
+
+SELECT pg_catalog.setval('creative_project_attribute_question_question_id_seq', 1, false);
+
+
+--
+-- TOC entry 146 (class 1259 OID 372383)
+-- Dependencies: 1857 3
+-- Name: creative_project_country_language; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE creative_project_country_language (
+    creative_project_id integer NOT NULL,
+    country_id character varying(2) NOT NULL,
+    language_id integer NOT NULL,
+    update_date timestamp without time zone DEFAULT now() NOT NULL,
+    title text
+);
+
+
+ALTER TABLE public.creative_project_country_language OWNER TO creative;
+
+--
+-- TOC entry 144 (class 1259 OID 372340)
+-- Dependencies: 145 3
+-- Name: creative_project_creative_project_id_seq; Type: SEQUENCE; Schema: public; Owner: creative
+--
+
+CREATE SEQUENCE creative_project_creative_project_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.creative_project_creative_project_id_seq OWNER TO creative;
+
+--
+-- TOC entry 1951 (class 0 OID 0)
+-- Dependencies: 144
+-- Name: creative_project_creative_project_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: creative
+--
+
+ALTER SEQUENCE creative_project_creative_project_id_seq OWNED BY creative_project.creative_project_id;
+
+
+--
+-- TOC entry 1952 (class 0 OID 0)
+-- Dependencies: 144
+-- Name: creative_project_creative_project_id_seq; Type: SEQUENCE SET; Schema: public; Owner: creative
+--
+
+SELECT pg_catalog.setval('creative_project_creative_project_id_seq', 43, true);
+
+
+--
+-- TOC entry 153 (class 1259 OID 372544)
+-- Dependencies: 3
+-- Name: creative_project_image_answer; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE creative_project_image_answer (
+    creative_project_id integer NOT NULL,
+    question_id integer NOT NULL,
+    uid character varying(16) NOT NULL,
+    media_file_rate_1 text NOT NULL,
+    media_file_rate_2 text NOT NULL,
+    media_file_rate_3 text NOT NULL,
+    media_file_rate_4 text NOT NULL,
+    media_file_rate_5 text NOT NULL,
+    update_date timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.creative_project_image_answer OWNER TO creative;
+
+--
+-- TOC entry 151 (class 1259 OID 372515)
+-- Dependencies: 3
+-- Name: creative_project_question_rating; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE creative_project_question_rating (
+    creative_project_id integer NOT NULL,
+    question_id integer NOT NULL,
+    media_layout character(1),
+    rating_type character(1),
+    min_value integer,
+    max_value integer,
+    measurement_unit character varying(8),
+    update_date timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.creative_project_question_rating OWNER TO creative;
+
+--
+-- TOC entry 150 (class 1259 OID 372513)
+-- Dependencies: 151 3
+-- Name: creative_project_image_question_question_id_seq; Type: SEQUENCE; Schema: public; Owner: creative
+--
+
+CREATE SEQUENCE creative_project_image_question_question_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.creative_project_image_question_question_id_seq OWNER TO creative;
+
+--
+-- TOC entry 1953 (class 0 OID 0)
+-- Dependencies: 150
+-- Name: creative_project_image_question_question_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: creative
+--
+
+ALTER SEQUENCE creative_project_image_question_question_id_seq OWNED BY creative_project_question_rating.question_id;
+
+
+--
+-- TOC entry 1954 (class 0 OID 0)
+-- Dependencies: 150
+-- Name: creative_project_image_question_question_id_seq; Type: SEQUENCE SET; Schema: public; Owner: creative
+--
+
+SELECT pg_catalog.setval('creative_project_image_question_question_id_seq', 1, true);
+
+
+--
+-- TOC entry 156 (class 1259 OID 372680)
+-- Dependencies: 1862 3
+-- Name: creative_project_question; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE creative_project_question (
+    creative_project_id integer NOT NULL,
+    question_id integer NOT NULL,
+    question_type_id integer,
+    update_date timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.creative_project_question OWNER TO creative;
+
+--
+-- TOC entry 147 (class 1259 OID 372471)
+-- Dependencies: 3
+-- Name: creative_project_question_by_language; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE creative_project_question_by_language (
+    creative_project_id integer NOT NULL,
+    question_id integer NOT NULL,
+    language_id integer NOT NULL,
+    question_text text NOT NULL,
+    country_id character varying(2) NOT NULL
+);
+
+
+ALTER TABLE public.creative_project_question_by_language OWNER TO creative;
+
+--
+-- TOC entry 155 (class 1259 OID 372660)
+-- Dependencies: 1861 3
+-- Name: creative_project_question_media; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE creative_project_question_media (
+    creative_project_id integer NOT NULL,
+    question_id numeric NOT NULL,
+    index numeric NOT NULL,
+    path character varying(255),
+    update_date timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.creative_project_question_media OWNER TO creative;
+
+--
+-- TOC entry 158 (class 1259 OID 372717)
+-- Dependencies: 3
+-- Name: creative_project_question_media_id_seq; Type: SEQUENCE; Schema: public; Owner: creative
+--
+
+CREATE SEQUENCE creative_project_question_media_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.creative_project_question_media_id_seq OWNER TO creative;
+
+--
+-- TOC entry 1955 (class 0 OID 0)
+-- Dependencies: 158
+-- Name: creative_project_question_media_id_seq; Type: SEQUENCE SET; Schema: public; Owner: creative
+--
+
+SELECT pg_catalog.setval('creative_project_question_media_id_seq', 5, true);
+
+
+--
+-- TOC entry 154 (class 1259 OID 372562)
+-- Dependencies: 1860 3
+-- Name: creative_project_target_condition; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE creative_project_target_condition (
+    creative_project_id integer NOT NULL,
+    category character varying(32) NOT NULL,
+    value character varying(128) NOT NULL,
+    update_date timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.creative_project_target_condition OWNER TO creative;
+
+--
+-- TOC entry 128 (class 1259 OID 371900)
+-- Dependencies: 3
+-- Name: m_code; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE m_code (
+    group_id integer NOT NULL,
+    code character varying(16) NOT NULL,
+    key character varying(16) NOT NULL,
+    text character varying(256),
+    type character varying(16)
+);
+
+
+ALTER TABLE public.m_code OWNER TO creative;
+
+--
+-- TOC entry 127 (class 1259 OID 371892)
+-- Dependencies: 3
+-- Name: m_group; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE m_group (
+    group_id integer NOT NULL,
+    text character varying(32) NOT NULL,
+    remarks text
+);
+
+
+ALTER TABLE public.m_group OWNER TO creative;
+
+--
+-- TOC entry 129 (class 1259 OID 371910)
+-- Dependencies: 1655 3
+-- Name: m_cd; Type: VIEW; Schema: public; Owner: creative
+--
+
+CREATE VIEW m_cd AS
+    SELECT m_group.text AS category, m_code.text, m_group.group_id, m_code.code, m_code.key, m_group.remarks FROM (m_code LEFT JOIN m_group ON ((m_code.group_id = m_group.group_id))) WHERE (m_code.text IS NOT NULL) ORDER BY m_group.group_id, m_code.code;
+
+
+ALTER TABLE public.m_cd OWNER TO creative;
+
+--
+-- TOC entry 130 (class 1259 OID 371914)
+-- Dependencies: 1656 3
+-- Name: m_area_cd; Type: VIEW; Schema: public; Owner: creative
+--
+
+CREATE VIEW m_area_cd AS
+    SELECT a.category, a.text AS area, b.text AS city, a.group_id AS area_group_id, a.code AS area_code, b.group_id AS city_group_id, b.code AS city_code FROM (m_cd a LEFT JOIN m_cd b ON ((b.group_id = ((a.code)::integer * 1000)))) WHERE ((a.category)::text ~~ '%AREA'::text) ORDER BY a.category, a.text, b.text;
+
+
+ALTER TABLE public.m_area_cd OWNER TO creative;
+
+--
+-- TOC entry 136 (class 1259 OID 371938)
+-- Dependencies: 3
+-- Name: m_category_attribute; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE m_category_attribute (
+    attribute_id integer NOT NULL,
+    language_id integer NOT NULL,
+    category_id integer NOT NULL,
+    attribute_text character varying(32),
+    display_flag boolean NOT NULL
+);
+
+
+ALTER TABLE public.m_category_attribute OWNER TO creative;
+
+--
+-- TOC entry 135 (class 1259 OID 371936)
+-- Dependencies: 3 136
+-- Name: m_category_attribute_attribute_id_seq; Type: SEQUENCE; Schema: public; Owner: creative
+--
+
+CREATE SEQUENCE m_category_attribute_attribute_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.m_category_attribute_attribute_id_seq OWNER TO creative;
+
+--
+-- TOC entry 1961 (class 0 OID 0)
+-- Dependencies: 135
+-- Name: m_category_attribute_attribute_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: creative
+--
+
+ALTER SEQUENCE m_category_attribute_attribute_id_seq OWNED BY m_category_attribute.attribute_id;
+
+
+--
+-- TOC entry 1962 (class 0 OID 0)
+-- Dependencies: 135
+-- Name: m_category_attribute_attribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: creative
+--
+
+SELECT pg_catalog.setval('m_category_attribute_attribute_id_seq', 1, false);
+
+
+--
+-- TOC entry 132 (class 1259 OID 371922)
+-- Dependencies: 3
+-- Name: m_creative_category; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE m_creative_category (
+    category_id integer NOT NULL,
+    category_name character varying(64) NOT NULL
+);
+
+
+ALTER TABLE public.m_creative_category OWNER TO creative;
+
+--
+-- TOC entry 131 (class 1259 OID 371920)
+-- Dependencies: 132 3
+-- Name: m_creative_category_category_id_seq; Type: SEQUENCE; Schema: public; Owner: creative
+--
+
+CREATE SEQUENCE m_creative_category_category_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.m_creative_category_category_id_seq OWNER TO creative;
+
+--
+-- TOC entry 1964 (class 0 OID 0)
+-- Dependencies: 131
+-- Name: m_creative_category_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: creative
+--
+
+ALTER SEQUENCE m_creative_category_category_id_seq OWNED BY m_creative_category.category_id;
+
+
+--
+-- TOC entry 1965 (class 0 OID 0)
+-- Dependencies: 131
+-- Name: m_creative_category_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: creative
+--
+
+SELECT pg_catalog.setval('m_creative_category_category_id_seq', 1, false);
+
+
+--
+-- TOC entry 134 (class 1259 OID 371930)
+-- Dependencies: 3
+-- Name: m_creative_template; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE m_creative_template (
+    template_id integer NOT NULL,
+    template_name character varying(64) NOT NULL
+);
+
+
+ALTER TABLE public.m_creative_template OWNER TO creative;
+
+--
+-- TOC entry 133 (class 1259 OID 371928)
+-- Dependencies: 134 3
+-- Name: m_creative_template_template_id_seq; Type: SEQUENCE; Schema: public; Owner: creative
+--
+
+CREATE SEQUENCE m_creative_template_template_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.m_creative_template_template_id_seq OWNER TO creative;
+
+--
+-- TOC entry 1967 (class 0 OID 0)
+-- Dependencies: 133
+-- Name: m_creative_template_template_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: creative
+--
+
+ALTER SEQUENCE m_creative_template_template_id_seq OWNED BY m_creative_template.template_id;
+
+
+--
+-- TOC entry 1968 (class 0 OID 0)
+-- Dependencies: 133
+-- Name: m_creative_template_template_id_seq; Type: SEQUENCE SET; Schema: public; Owner: creative
+--
+
+SELECT pg_catalog.setval('m_creative_template_template_id_seq', 1, false);
+
+
+--
+-- TOC entry 143 (class 1259 OID 372330)
+-- Dependencies: 3
+-- Name: m_creative_user; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE m_creative_user (
+    creative_user_id integer NOT NULL,
+    email character varying(64) NOT NULL,
+    password character varying(32) NOT NULL,
+    first_name character varying(32) NOT NULL,
+    last_name character varying(32) NOT NULL,
+    job_title character varying(32),
+    user_country character(2) NOT NULL,
+    company_name character varying(64),
+    company_address character varying(256),
+    contact_number character varying(24) NOT NULL,
+    industry character(3) NOT NULL,
+    account_status character(2) NOT NULL,
+    account_create_date integer,
+    account_delete_date integer,
+    last_login_date integer
+);
+
+
+ALTER TABLE public.m_creative_user OWNER TO creative;
+
+--
+-- TOC entry 142 (class 1259 OID 372328)
+-- Dependencies: 143 3
+-- Name: m_creative_user_creative_user_id_seq; Type: SEQUENCE; Schema: public; Owner: creative
+--
+
+CREATE SEQUENCE m_creative_user_creative_user_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.m_creative_user_creative_user_id_seq OWNER TO creative;
+
+--
+-- TOC entry 1969 (class 0 OID 0)
+-- Dependencies: 142
+-- Name: m_creative_user_creative_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: creative
+--
+
+ALTER SEQUENCE m_creative_user_creative_user_id_seq OWNED BY m_creative_user.creative_user_id;
+
+
+--
+-- TOC entry 1970 (class 0 OID 0)
+-- Dependencies: 142
+-- Name: m_creative_user_creative_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: creative
+--
+
+SELECT pg_catalog.setval('m_creative_user_creative_user_id_seq', 11, true);
+
+
+--
+-- TOC entry 157 (class 1259 OID 372691)
+-- Dependencies: 3
+-- Name: m_question_type; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE m_question_type (
+    question_type_id integer NOT NULL,
+    description text
+);
+
+
+ALTER TABLE public.m_question_type OWNER TO creative;
+
+--
+-- TOC entry 137 (class 1259 OID 371975)
+-- Dependencies: 3
+-- Name: m_target_condition; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE m_target_condition (
+    category character varying(32) NOT NULL,
+    display_text character varying(128) NOT NULL
+);
+
+
+ALTER TABLE public.m_target_condition OWNER TO creative;
+
+--
+-- TOC entry 141 (class 1259 OID 372041)
+-- Dependencies: 3
+-- Name: message; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE message (
+    id integer NOT NULL,
+    language character varying(2) NOT NULL,
+    translation text NOT NULL
+);
+
+
+ALTER TABLE public.message OWNER TO creative;
+
+--
+-- TOC entry 140 (class 1259 OID 372039)
+-- Dependencies: 3 141
+-- Name: message_id_seq; Type: SEQUENCE; Schema: public; Owner: creative
+--
+
+CREATE SEQUENCE message_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.message_id_seq OWNER TO creative;
+
+--
+-- TOC entry 1972 (class 0 OID 0)
+-- Dependencies: 140
+-- Name: message_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: creative
+--
+
+ALTER SEQUENCE message_id_seq OWNED BY message.id;
+
+
+--
+-- TOC entry 1973 (class 0 OID 0)
+-- Dependencies: 140
+-- Name: message_id_seq; Type: SEQUENCE SET; Schema: public; Owner: creative
+--
+
+SELECT pg_catalog.setval('message_id_seq', 1, false);
+
+
+--
+-- TOC entry 139 (class 1259 OID 372030)
+-- Dependencies: 3
+-- Name: source_message; Type: TABLE; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE TABLE source_message (
+    id integer NOT NULL,
+    item character varying(32) NOT NULL,
+    message text NOT NULL
+);
+
+
+ALTER TABLE public.source_message OWNER TO creative;
+
+--
+-- TOC entry 138 (class 1259 OID 372028)
+-- Dependencies: 139 3
+-- Name: source_message_id_seq; Type: SEQUENCE; Schema: public; Owner: creative
+--
+
+CREATE SEQUENCE source_message_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.source_message_id_seq OWNER TO creative;
+
+--
+-- TOC entry 1974 (class 0 OID 0)
+-- Dependencies: 138
+-- Name: source_message_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: creative
+--
+
+ALTER SEQUENCE source_message_id_seq OWNED BY source_message.id;
+
+
+--
+-- TOC entry 1975 (class 0 OID 0)
+-- Dependencies: 138
+-- Name: source_message_id_seq; Type: SEQUENCE SET; Schema: public; Owner: creative
+--
+
+SELECT pg_catalog.setval('source_message_id_seq', 1, false);
+
+
+--
+-- TOC entry 1854 (class 2604 OID 372345)
+-- Dependencies: 145 144 145
+-- Name: creative_project_id; Type: DEFAULT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project ALTER COLUMN creative_project_id SET DEFAULT nextval('creative_project_creative_project_id_seq'::regclass);
+
+
+--
+-- TOC entry 1858 (class 2604 OID 372502)
+-- Dependencies: 149 148 149
+-- Name: question_id; Type: DEFAULT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_attribute_question ALTER COLUMN question_id SET DEFAULT nextval('creative_project_attribute_question_question_id_seq'::regclass);
+
+
+--
+-- TOC entry 1859 (class 2604 OID 372518)
+-- Dependencies: 151 150 151
+-- Name: question_id; Type: DEFAULT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_question_rating ALTER COLUMN question_id SET DEFAULT nextval('creative_project_image_question_question_id_seq'::regclass);
+
+
+--
+-- TOC entry 1850 (class 2604 OID 371941)
+-- Dependencies: 135 136 136
+-- Name: attribute_id; Type: DEFAULT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY m_category_attribute ALTER COLUMN attribute_id SET DEFAULT nextval('m_category_attribute_attribute_id_seq'::regclass);
+
+
+--
+-- TOC entry 1848 (class 2604 OID 371925)
+-- Dependencies: 131 132 132
+-- Name: category_id; Type: DEFAULT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY m_creative_category ALTER COLUMN category_id SET DEFAULT nextval('m_creative_category_category_id_seq'::regclass);
+
+
+--
+-- TOC entry 1849 (class 2604 OID 371933)
+-- Dependencies: 133 134 134
+-- Name: template_id; Type: DEFAULT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY m_creative_template ALTER COLUMN template_id SET DEFAULT nextval('m_creative_template_template_id_seq'::regclass);
+
+
+--
+-- TOC entry 1853 (class 2604 OID 372333)
+-- Dependencies: 143 142 143
+-- Name: creative_user_id; Type: DEFAULT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY m_creative_user ALTER COLUMN creative_user_id SET DEFAULT nextval('m_creative_user_creative_user_id_seq'::regclass);
+
+
+--
+-- TOC entry 1852 (class 2604 OID 372044)
+-- Dependencies: 140 141 141
+-- Name: id; Type: DEFAULT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY message ALTER COLUMN id SET DEFAULT nextval('message_id_seq'::regclass);
+
+
+--
+-- TOC entry 1851 (class 2604 OID 372033)
+-- Dependencies: 138 139 139
+-- Name: id; Type: DEFAULT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY source_message ALTER COLUMN id SET DEFAULT nextval('source_message_id_seq'::regclass);
+
+
+--
+-- TOC entry 1932 (class 0 OID 372342)
+-- Dependencies: 145
+-- Data for Name: creative_project; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY creative_project (creative_project_id, creative_user_id, category_id, template_id, project_status, launch_date, close_date, create_date, update_date) FROM stdin;
+41	2	1	1	10	\N	\N	2013-12-01 18:19:52.43	2013-12-01 18:19:52.43
+43	2	0	1	10	\N	\N	2013-12-03 21:21:03.607	2013-12-03 21:21:03.607
+42	2	0	0	10	\N	\N	2013-12-01 18:24:22.233	2013-12-01 18:24:22.233
+\.
+
+
+--
+-- TOC entry 1937 (class 0 OID 372529)
+-- Dependencies: 152
+-- Data for Name: creative_project_attribute_answer; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY creative_project_attribute_answer (creative_project_id, question_id, uid, attribute_id, update_date, country_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1935 (class 0 OID 372499)
+-- Dependencies: 149
+-- Data for Name: creative_project_attribute_question; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY creative_project_attribute_question (creative_project_id, question_id, media_file) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1933 (class 0 OID 372383)
+-- Dependencies: 146
+-- Data for Name: creative_project_country_language; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY creative_project_country_language (creative_project_id, country_id, language_id, update_date, title) FROM stdin;
+43	PH	1	2013-12-03 21:45:57.296	en
+43	MY	1	2013-12-03 21:51:46.827	en
+42	FR	13	2013-12-01 18:24:22.233	FR Title
+42	JP	2	2013-12-01 18:24:22.233	JP Title
+42	KR	5	2013-12-01 18:24:22.233	KR Title
+41	FR	13	2013-12-03 17:19:52.297	FR Title
+41	HK	4	2013-12-03 17:19:52.297	TR Title
+41	SG	1	2013-12-03 17:19:52.297	English Title
+43	MY	3	2013-12-03 22:01:48.575	cn
+42	HK	4	2013-12-03 20:58:58.386	TR Title
+42	TW	4	2013-12-03 20:58:58.386	TR Title
+42	IN	1	2013-12-03 20:58:58.386	EN Title
+43	CN	3	2013-12-03 22:20:08.239	cn
+43	FR	13	2013-12-03 22:20:08.239	fr
+43	HK	4	2013-12-03 22:20:08.239	tr
+43	ID	10	2013-12-03 22:20:08.239	id
+43	IN	1	2013-12-03 22:20:08.239	en
+43	JP	2	2013-12-03 22:20:08.239	jp
+43	KR	5	2013-12-03 22:20:08.239	kr
+43	SG	1	2013-12-03 22:20:08.239	en
+43	TH	6	2013-12-03 22:20:08.239	th
+43	TW	4	2013-12-03 22:20:08.239	tr
+43	UK	1	2013-12-03 22:20:08.239	en
+43	US	1	2013-12-03 22:20:08.239	en
+43	VN	8	2013-12-03 22:20:08.239	vn
+41	US	1	2013-12-04 16:36:59.108	English Title
+\.
+
+
+--
+-- TOC entry 1938 (class 0 OID 372544)
+-- Dependencies: 153
+-- Data for Name: creative_project_image_answer; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY creative_project_image_answer (creative_project_id, question_id, uid, media_file_rate_1, media_file_rate_2, media_file_rate_3, media_file_rate_4, media_file_rate_5, update_date) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1941 (class 0 OID 372680)
+-- Dependencies: 156
+-- Data for Name: creative_project_question; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY creative_project_question (creative_project_id, question_id, question_type_id, update_date) FROM stdin;
+42	1	1	2013-12-01 18:24:53.085
+41	1	1	2013-12-04 16:38:20.324
+43	1	1	2013-12-05 09:11:48.13
+\.
+
+
+--
+-- TOC entry 1934 (class 0 OID 372471)
+-- Dependencies: 147
+-- Data for Name: creative_project_question_by_language; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY creative_project_question_by_language (creative_project_id, question_id, language_id, question_text, country_id) FROM stdin;
+43	1	1	en	PH
+43	1	1	en	MY
+43	1	3	sc	MY
+43	1	3	sc	CN
+43	1	13	fr	FR
+43	1	4	tr	HK
+43	1	10	id	ID
+43	1	1	en	IN
+43	1	2	jp	JP
+43	1	5	kr	KR
+43	1	1	en	SG
+43	1	6	th	TH
+43	1	4	tr	TW
+43	1	1	en	UK
+43	1	1	en	US
+43	1	8	vn	VN
+\.
+
+
+--
+-- TOC entry 1940 (class 0 OID 372660)
+-- Dependencies: 155
+-- Data for Name: creative_project_question_media; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY creative_project_question_media (creative_project_id, question_id, index, path, update_date) FROM stdin;
+43	1	1	files/1386205887174stock-photo-blue-sky-and-clouds-abstract-illustration-144160735.jpg	2013-12-05 09:11:27.211
+43	1	2	files/1386205887192stock-vector-abstract-winter-background-with-rowan-eps-159364883.jpg	2013-12-05 09:11:27.211
+\.
+
+
+--
+-- TOC entry 1936 (class 0 OID 372515)
+-- Dependencies: 151
+-- Data for Name: creative_project_question_rating; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY creative_project_question_rating (creative_project_id, question_id, media_layout, rating_type, min_value, max_value, measurement_unit, update_date) FROM stdin;
+41	1	 	 	\N	\N	0	2013-12-04 16:38:20.324
+43	1	1	0	1	100	0	2013-12-05 09:11:48.13
+\.
+
+
+--
+-- TOC entry 1939 (class 0 OID 372562)
+-- Dependencies: 154
+-- Data for Name: creative_project_target_condition; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY creative_project_target_condition (creative_project_id, category, value, update_date) FROM stdin;
+42	age_max	30	2013-12-01 18:24:22.233
+42	age_min	20	2013-12-01 18:24:22.233
+42	marital_status	1,2,3,4,5,6	2013-12-01 18:24:22.233
+42	sample	270	2013-12-01 18:24:22.233
+42	gender	1,2	2013-12-01 18:24:22.233
+41	marital_status	1,2,3,4,5,6	2013-12-02 09:00:31.242
+41	sample	190	2013-12-02 09:01:05.431
+41	age_min	20	2013-12-02 09:01:22.558
+42	city	03001027,14017019,04010019	2013-12-03 10:12:56.585
+42	prefecture	03001,14017,04010	2013-12-03 10:12:56.585
+41	age_max	20	2013-12-03 11:26:32.30
+41	city	03001009,06001000	2013-12-03 17:46:10.985
+41	prefecture	03001,06001	2013-12-03 17:46:10.985
+43	sample	200	2013-12-03 21:26:20.878
+43	age_max	30	2013-12-03 21:26:42.787
+43	age_min	20	2013-12-03 21:26:42.787
+43	gender	1,2	2013-12-03 21:28:01.739
+43	marital_status	1,2,3	2013-12-03 21:46:19.693
+43	city	02016010	2013-12-05 08:58:49.919
+43	prefecture	02016	2013-12-05 08:58:49.919
+\.
+
+
+--
+-- TOC entry 1927 (class 0 OID 371938)
+-- Dependencies: 136
+-- Data for Name: m_category_attribute; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY m_category_attribute (attribute_id, language_id, category_id, attribute_text, display_flag) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1924 (class 0 OID 371900)
+-- Dependencies: 128
+-- Data for Name: m_code; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY m_code (group_id, code, key, text, type) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1925 (class 0 OID 371922)
+-- Dependencies: 132
+-- Data for Name: m_creative_category; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY m_creative_category (category_id, category_name) FROM stdin;
+0	Awareness Check
+1	Disaster Control
+\.
+
+
+--
+-- TOC entry 1926 (class 0 OID 371930)
+-- Dependencies: 134
+-- Data for Name: m_creative_template; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY m_creative_template (template_id, template_name) FROM stdin;
+0	Attributes association
+1	Images Comparision
+\.
+
+
+--
+-- TOC entry 1931 (class 0 OID 372330)
+-- Dependencies: 143
+-- Data for Name: m_creative_user; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY m_creative_user (creative_user_id, email, password, first_name, last_name, job_title, user_country, company_name, company_address, contact_number, industry, account_status, account_create_date, account_delete_date, last_login_date) FROM stdin;
+6	tester@localhost.com	5f4dcc3b5aa765d61d8327deb882cf99	David	Yew		Ph			123	12 	4 	1385345128	\N	1385345128
+7	tester001@localhost.com	5f4dcc3b5aa765d61d8327deb882cf99	Dav	Y		Ph			123	123	4 	1385345701	\N	1385345701
+8	tester002@localhost.com	5f4dcc3b5aa765d61d8327deb882cf99	Dav	Yew		Ph			1231	12 	4 	1385345747	\N	1385345747
+10	creative@aip-surveys.com	828e096fef42d94858dd49b27ab903f3	AIP	Creative		SG			1234567	AIP	4 	1385369613	\N	1385945652
+2	test@localhost.com	5f4dcc3b5aa765d61d8327deb882cf99	David	Yew		MY		Malaysia	2345678	CD 	4 	1385186037	\N	1386205109
+9	abc@localhost.com	1a1dc91c907325c69271ddf0c944bc72	abc	bac		Si			120391	091	4 	1385369197	\N	1385369197
+11	pearlyn@aip-global.com	16d7a4fca7442dda3ad93c9a726597e4	Pearlyn	Quah	Manager	Si	AIP	Singapore	67351234	Tes	4 	1385371801	\N	1385371836
+\.
+
+
+--
+-- TOC entry 1923 (class 0 OID 371892)
+-- Dependencies: 127
+-- Data for Name: m_group; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY m_group (group_id, text, remarks) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1942 (class 0 OID 372691)
+-- Dependencies: 157
+-- Data for Name: m_question_type; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY m_question_type (question_type_id, description) FROM stdin;
+1	Attribute Association
+2	Image Comparison
+\.
+
+
+--
+-- TOC entry 1928 (class 0 OID 371975)
+-- Dependencies: 137
+-- Data for Name: m_target_condition; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY m_target_condition (category, display_text) FROM stdin;
+city	City
+age_min	Minimum Age
+age_max	Maxiumum Age
+marital_status	Marital Status
+sample	Sample
+gender	Gender
+prefecture	Prefecture
+\.
+
+
+--
+-- TOC entry 1930 (class 0 OID 372041)
+-- Dependencies: 141
+-- Data for Name: message; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY message (id, language, translation) FROM stdin;
+1	zh	ni ha
+2	zh	yi er san
+3	zh	ln wow!
+\.
+
+
+--
+-- TOC entry 1929 (class 0 OID 372030)
+-- Dependencies: 139
+-- Data for Name: source_message; Type: TABLE DATA; Schema: public; Owner: creative
+--
+
+COPY source_message (id, item, message) FROM stdin;
+1	hello	hello
+2	hello	abc
+3	hello	def
+\.
+
+
+--
+-- TOC entry 1892 (class 2606 OID 372533)
+-- Dependencies: 152 152 152 152 152
+-- Name: creative_project_attribute_answer_pkey; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY creative_project_attribute_answer
+    ADD CONSTRAINT creative_project_attribute_answer_pkey PRIMARY KEY (creative_project_id, question_id, uid, attribute_id);
+
+
+--
+-- TOC entry 1888 (class 2606 OID 372507)
+-- Dependencies: 149 149 149
+-- Name: creative_project_attribute_question_pkey; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY creative_project_attribute_question
+    ADD CONSTRAINT creative_project_attribute_question_pkey PRIMARY KEY (creative_project_id, question_id);
+
+
+--
+-- TOC entry 1884 (class 2606 OID 372387)
+-- Dependencies: 146 146 146 146
+-- Name: creative_project_country_language_pkey; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY creative_project_country_language
+    ADD CONSTRAINT creative_project_country_language_pkey PRIMARY KEY (creative_project_id, country_id, language_id);
+
+
+--
+-- TOC entry 1894 (class 2606 OID 372551)
+-- Dependencies: 153 153 153 153
+-- Name: creative_project_image_answer_pkey; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY creative_project_image_answer
+    ADD CONSTRAINT creative_project_image_answer_pkey PRIMARY KEY (creative_project_id, question_id, uid);
+
+
+--
+-- TOC entry 1890 (class 2606 OID 372523)
+-- Dependencies: 151 151 151
+-- Name: creative_project_image_question_pkey; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY creative_project_question_rating
+    ADD CONSTRAINT creative_project_image_question_pkey PRIMARY KEY (creative_project_id, question_id);
+
+
+--
+-- TOC entry 1898 (class 2606 OID 372746)
+-- Dependencies: 155 155 155 155
+-- Name: creative_project_media_pk; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY creative_project_question_media
+    ADD CONSTRAINT creative_project_media_pk PRIMARY KEY (creative_project_id, question_id, index);
+
+
+--
+-- TOC entry 1882 (class 2606 OID 372348)
+-- Dependencies: 145 145
+-- Name: creative_project_pkey; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY creative_project
+    ADD CONSTRAINT creative_project_pkey PRIMARY KEY (creative_project_id);
+
+
+--
+-- TOC entry 1886 (class 2606 OID 372748)
+-- Dependencies: 147 147 147 147 147
+-- Name: creative_project_question_by_language_pk; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY creative_project_question_by_language
+    ADD CONSTRAINT creative_project_question_by_language_pk PRIMARY KEY (creative_project_id, question_id, language_id, country_id);
+
+
+--
+-- TOC entry 1901 (class 2606 OID 372685)
+-- Dependencies: 156 156 156
+-- Name: creative_project_question_pk; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY creative_project_question
+    ADD CONSTRAINT creative_project_question_pk PRIMARY KEY (creative_project_id, question_id);
+
+
+--
+-- TOC entry 1896 (class 2606 OID 372566)
+-- Dependencies: 154 154 154 154
+-- Name: creative_project_target_condition_pkey; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY creative_project_target_condition
+    ADD CONSTRAINT creative_project_target_condition_pkey PRIMARY KEY (creative_project_id, category, value);
+
+
+--
+-- TOC entry 1872 (class 2606 OID 371943)
+-- Dependencies: 136 136 136 136
+-- Name: m_category_attribute_pkey; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY m_category_attribute
+    ADD CONSTRAINT m_category_attribute_pkey PRIMARY KEY (attribute_id, language_id, category_id);
+
+
+--
+-- TOC entry 1866 (class 2606 OID 371904)
+-- Dependencies: 128 128 128 128
+-- Name: m_code_pkey; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY m_code
+    ADD CONSTRAINT m_code_pkey PRIMARY KEY (group_id, code, key);
+
+
+--
+-- TOC entry 1868 (class 2606 OID 371927)
+-- Dependencies: 132 132
+-- Name: m_creative_category_pkey; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY m_creative_category
+    ADD CONSTRAINT m_creative_category_pkey PRIMARY KEY (category_id);
+
+
+--
+-- TOC entry 1870 (class 2606 OID 371935)
+-- Dependencies: 134 134
+-- Name: m_creative_template_pkey; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY m_creative_template
+    ADD CONSTRAINT m_creative_template_pkey PRIMARY KEY (template_id);
+
+
+--
+-- TOC entry 1880 (class 2606 OID 372339)
+-- Dependencies: 143 143
+-- Name: m_creative_user_pkey; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY m_creative_user
+    ADD CONSTRAINT m_creative_user_pkey PRIMARY KEY (creative_user_id);
+
+
+--
+-- TOC entry 1864 (class 2606 OID 371899)
+-- Dependencies: 127 127
+-- Name: m_group_pkey; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY m_group
+    ADD CONSTRAINT m_group_pkey PRIMARY KEY (group_id);
+
+
+--
+-- TOC entry 1874 (class 2606 OID 371979)
+-- Dependencies: 137 137
+-- Name: m_target_condition_pkey; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY m_target_condition
+    ADD CONSTRAINT m_target_condition_pkey PRIMARY KEY (category);
+
+
+--
+-- TOC entry 1878 (class 2606 OID 372365)
+-- Dependencies: 141 141 141
+-- Name: message_pk; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY message
+    ADD CONSTRAINT message_pk PRIMARY KEY (id, language);
+
+
+--
+-- TOC entry 1903 (class 2606 OID 372698)
+-- Dependencies: 157 157
+-- Name: question_type_pk; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY m_question_type
+    ADD CONSTRAINT question_type_pk PRIMARY KEY (question_type_id);
+
+
+--
+-- TOC entry 1876 (class 2606 OID 372367)
+-- Dependencies: 139 139
+-- Name: source_message_pk; Type: CONSTRAINT; Schema: public; Owner: creative; Tablespace: 
+--
+
+ALTER TABLE ONLY source_message
+    ADD CONSTRAINT source_message_pk PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1899 (class 1259 OID 372744)
+-- Dependencies: 155
+-- Name: fki_creative_project_id_fk; Type: INDEX; Schema: public; Owner: creative; Tablespace: 
+--
+
+CREATE INDEX fki_creative_project_id_fk ON creative_project_question_media USING btree (creative_project_id);
+
+
+--
+-- TOC entry 1914 (class 2606 OID 372534)
+-- Dependencies: 152 145 1881
+-- Name: creative_project_attribute_answer_creative_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_attribute_answer
+    ADD CONSTRAINT creative_project_attribute_answer_creative_project_id_fkey FOREIGN KEY (creative_project_id) REFERENCES creative_project(creative_project_id);
+
+
+--
+-- TOC entry 1915 (class 2606 OID 372539)
+-- Dependencies: 152 152 149 149 1887
+-- Name: creative_project_attribute_answer_creative_project_id_fkey1; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_attribute_answer
+    ADD CONSTRAINT creative_project_attribute_answer_creative_project_id_fkey1 FOREIGN KEY (creative_project_id, question_id) REFERENCES creative_project_attribute_question(creative_project_id, question_id);
+
+
+--
+-- TOC entry 1912 (class 2606 OID 372508)
+-- Dependencies: 149 1881 145
+-- Name: creative_project_attribute_question_creative_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_attribute_question
+    ADD CONSTRAINT creative_project_attribute_question_creative_project_id_fkey FOREIGN KEY (creative_project_id) REFERENCES creative_project(creative_project_id);
+
+
+--
+-- TOC entry 1908 (class 2606 OID 372354)
+-- Dependencies: 1867 145 132
+-- Name: creative_project_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project
+    ADD CONSTRAINT creative_project_category_id_fkey FOREIGN KEY (category_id) REFERENCES m_creative_category(category_id);
+
+
+--
+-- TOC entry 1910 (class 2606 OID 372388)
+-- Dependencies: 1881 145 146
+-- Name: creative_project_country_language_creative_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_country_language
+    ADD CONSTRAINT creative_project_country_language_creative_project_id_fkey FOREIGN KEY (creative_project_id) REFERENCES creative_project(creative_project_id);
+
+
+--
+-- TOC entry 1907 (class 2606 OID 372349)
+-- Dependencies: 145 1879 143
+-- Name: creative_project_creative_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project
+    ADD CONSTRAINT creative_project_creative_user_id_fkey FOREIGN KEY (creative_user_id) REFERENCES m_creative_user(creative_user_id);
+
+
+--
+-- TOC entry 1921 (class 2606 OID 372686)
+-- Dependencies: 1881 145 156
+-- Name: creative_project_fk; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_question
+    ADD CONSTRAINT creative_project_fk FOREIGN KEY (creative_project_id) REFERENCES creative_project(creative_project_id);
+
+
+--
+-- TOC entry 1920 (class 2606 OID 372739)
+-- Dependencies: 145 1881 155
+-- Name: creative_project_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_question_media
+    ADD CONSTRAINT creative_project_id_fk FOREIGN KEY (creative_project_id) REFERENCES creative_project(creative_project_id);
+
+
+--
+-- TOC entry 1916 (class 2606 OID 372552)
+-- Dependencies: 145 153 1881
+-- Name: creative_project_image_answer_creative_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_image_answer
+    ADD CONSTRAINT creative_project_image_answer_creative_project_id_fkey FOREIGN KEY (creative_project_id) REFERENCES creative_project(creative_project_id);
+
+
+--
+-- TOC entry 1917 (class 2606 OID 372557)
+-- Dependencies: 149 153 153 149 1887
+-- Name: creative_project_image_answer_creative_project_id_fkey1; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_image_answer
+    ADD CONSTRAINT creative_project_image_answer_creative_project_id_fkey1 FOREIGN KEY (creative_project_id, question_id) REFERENCES creative_project_attribute_question(creative_project_id, question_id);
+
+
+--
+-- TOC entry 1913 (class 2606 OID 372524)
+-- Dependencies: 1881 151 145
+-- Name: creative_project_image_question_creative_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_question_rating
+    ADD CONSTRAINT creative_project_image_question_creative_project_id_fkey FOREIGN KEY (creative_project_id) REFERENCES creative_project(creative_project_id);
+
+
+--
+-- TOC entry 1911 (class 2606 OID 372479)
+-- Dependencies: 147 145 1881
+-- Name: creative_project_question_by_language_creative_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_question_by_language
+    ADD CONSTRAINT creative_project_question_by_language_creative_project_id_fkey FOREIGN KEY (creative_project_id) REFERENCES creative_project(creative_project_id);
+
+
+--
+-- TOC entry 1919 (class 2606 OID 372572)
+-- Dependencies: 154 137 1873
+-- Name: creative_project_target_condition_category_fkey; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_target_condition
+    ADD CONSTRAINT creative_project_target_condition_category_fkey FOREIGN KEY (category) REFERENCES m_target_condition(category);
+
+
+--
+-- TOC entry 1918 (class 2606 OID 372567)
+-- Dependencies: 154 1881 145
+-- Name: creative_project_target_condition_creative_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_target_condition
+    ADD CONSTRAINT creative_project_target_condition_creative_project_id_fkey FOREIGN KEY (creative_project_id) REFERENCES creative_project(creative_project_id);
+
+
+--
+-- TOC entry 1909 (class 2606 OID 372359)
+-- Dependencies: 134 1869 145
+-- Name: creative_project_template_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project
+    ADD CONSTRAINT creative_project_template_id_fkey FOREIGN KEY (template_id) REFERENCES m_creative_template(template_id);
+
+
+--
+-- TOC entry 1905 (class 2606 OID 371944)
+-- Dependencies: 1867 136 132
+-- Name: m_category_attribute_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY m_category_attribute
+    ADD CONSTRAINT m_category_attribute_category_id_fkey FOREIGN KEY (category_id) REFERENCES m_creative_category(category_id);
+
+
+--
+-- TOC entry 1904 (class 2606 OID 371905)
+-- Dependencies: 127 128 1863
+-- Name: m_code_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY m_code
+    ADD CONSTRAINT m_code_group_id_fkey FOREIGN KEY (group_id) REFERENCES m_group(group_id);
+
+
+--
+-- TOC entry 1906 (class 2606 OID 372368)
+-- Dependencies: 1875 139 141
+-- Name: message_fk; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY message
+    ADD CONSTRAINT message_fk FOREIGN KEY (id) REFERENCES source_message(id) ON UPDATE RESTRICT ON DELETE CASCADE;
+
+
+--
+-- TOC entry 1922 (class 2606 OID 372699)
+-- Dependencies: 1902 157 156
+-- Name: question_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: creative
+--
+
+ALTER TABLE ONLY creative_project_question
+    ADD CONSTRAINT question_id_fk FOREIGN KEY (question_type_id) REFERENCES m_question_type(question_type_id);
+
+
+--
+-- TOC entry 1948 (class 0 OID 0)
+-- Dependencies: 3
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- TOC entry 1956 (class 0 OID 0)
+-- Dependencies: 128
+-- Name: m_code; Type: ACL; Schema: public; Owner: creative
+--
+
+REVOKE ALL ON TABLE m_code FROM PUBLIC;
+REVOKE ALL ON TABLE m_code FROM creative;
+GRANT ALL ON TABLE m_code TO creative;
+
+
+--
+-- TOC entry 1957 (class 0 OID 0)
+-- Dependencies: 127
+-- Name: m_group; Type: ACL; Schema: public; Owner: creative
+--
+
+REVOKE ALL ON TABLE m_group FROM PUBLIC;
+REVOKE ALL ON TABLE m_group FROM creative;
+GRANT ALL ON TABLE m_group TO creative;
+
+
+--
+-- TOC entry 1958 (class 0 OID 0)
+-- Dependencies: 129
+-- Name: m_cd; Type: ACL; Schema: public; Owner: creative
+--
+
+REVOKE ALL ON TABLE m_cd FROM PUBLIC;
+REVOKE ALL ON TABLE m_cd FROM creative;
+GRANT ALL ON TABLE m_cd TO creative;
+GRANT SELECT ON TABLE m_cd TO readonly;
+
+
+--
+-- TOC entry 1959 (class 0 OID 0)
+-- Dependencies: 130
+-- Name: m_area_cd; Type: ACL; Schema: public; Owner: creative
+--
+
+REVOKE ALL ON TABLE m_area_cd FROM PUBLIC;
+REVOKE ALL ON TABLE m_area_cd FROM creative;
+GRANT ALL ON TABLE m_area_cd TO creative;
+GRANT SELECT ON TABLE m_area_cd TO readonly;
+
+
+--
+-- TOC entry 1960 (class 0 OID 0)
+-- Dependencies: 136
+-- Name: m_category_attribute; Type: ACL; Schema: public; Owner: creative
+--
+
+REVOKE ALL ON TABLE m_category_attribute FROM PUBLIC;
+REVOKE ALL ON TABLE m_category_attribute FROM creative;
+GRANT ALL ON TABLE m_category_attribute TO creative;
+
+
+--
+-- TOC entry 1963 (class 0 OID 0)
+-- Dependencies: 132
+-- Name: m_creative_category; Type: ACL; Schema: public; Owner: creative
+--
+
+REVOKE ALL ON TABLE m_creative_category FROM PUBLIC;
+REVOKE ALL ON TABLE m_creative_category FROM creative;
+GRANT ALL ON TABLE m_creative_category TO creative;
+
+
+--
+-- TOC entry 1966 (class 0 OID 0)
+-- Dependencies: 134
+-- Name: m_creative_template; Type: ACL; Schema: public; Owner: creative
+--
+
+REVOKE ALL ON TABLE m_creative_template FROM PUBLIC;
+REVOKE ALL ON TABLE m_creative_template FROM creative;
+GRANT ALL ON TABLE m_creative_template TO creative;
+
+
+--
+-- TOC entry 1971 (class 0 OID 0)
+-- Dependencies: 137
+-- Name: m_target_condition; Type: ACL; Schema: public; Owner: creative
+--
+
+REVOKE ALL ON TABLE m_target_condition FROM PUBLIC;
+REVOKE ALL ON TABLE m_target_condition FROM creative;
+GRANT ALL ON TABLE m_target_condition TO creative;
+
+
+-- Completed on 2013-12-05 09:20:36
+
+--
+-- PostgreSQL database dump complete
+--
+

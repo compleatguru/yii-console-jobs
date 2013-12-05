@@ -1,0 +1,9 @@
+.image_rator{
+    width:340px;
+    margin: 0 auto;
+}
+.image_rator > div { padding:5px; }
+.image_rator_image{
+    width:320px;
+    height: 240px;
+}

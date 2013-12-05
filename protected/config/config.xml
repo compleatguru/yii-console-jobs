@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <CodeTable>
+        <URL>http://10.0.0.22:8080/psiteapi/doCreativeMasterList.do</URL>
+    </CodeTable>
+    <Media>
+        <path>files</path>
+    </Media>
+
+    <emailService>
+		<delivery>local</delivery>
+  <from>
+      <email>admin@aipsurveys.com</email>
+      <name>AIP Surveys</name>
+  </from>
+        <smtp>
+            <host>localhost</host>
+            <port>25</port>
+            <user>webmaster@localhost</user>
+            <password>password</password>
+        </smtp>
+    </emailService>
+</config>
