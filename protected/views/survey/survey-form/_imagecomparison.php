@@ -8,7 +8,7 @@
 
 $cs = Yii::app()->clientScript;
 $cs->registerCssFile(Yii::app()->baseUrl . '/css/imagecompare.css')
-        ->registerScriptFile('jquery.js', CClientScript::POS_HEAD)
+        ->registerScriptFile('jquery.min.js', CClientScript::POS_HEAD)
         ->registerScriptFile('jquery-ui.min.js', CClientScript::POS_HEAD)
         ->registerScriptFile('knockout.js', CClientScript::POS_HEAD)
 ?>

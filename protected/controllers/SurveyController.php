@@ -39,6 +39,7 @@ class SurveyController extends Controller {
                 case 'editsurvey':
                 case 'imagecomparison':
                 case 'attributesassociation':
+                case 'launch':
                     if (CreativeProject::model()->isUserProject($this->actionParams['id']))
                         $rules[] = array('allow');
                     else {
@@ -128,8 +129,9 @@ class SurveyController extends Controller {
                     $SurveyTargetingForm->saveTargetingCondition();
                     $transaction->commit();
                 } else {
-                    Yii::log('Saving Project Error' . print_r($creativeProject->getErrors(), true));
                     $transaction->rollback();
+                    Yii::log('Saving Project Error' . print_r($creativeProject->getErrors(), true));
+                    Yii::app()->user->setFlash(CodeTable::FLASH_MESSAGE_ERROR, "Unable to save Survey Project");
                 }
             } catch (Exception $e) { // an exception is raised if a query fails
                 $transaction->rollback();
@@ -643,4 +645,8 @@ class SurveyController extends Controller {
         return $modelList;
     }
 
+    public function actionLaunch($id){
+      $service = new ProjectManagementService();
+      $service->launch($id);
+    }
 }

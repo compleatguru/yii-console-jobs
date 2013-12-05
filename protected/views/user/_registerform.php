@@ -3,7 +3,7 @@
 /* @var $model MCreativeUser */
 /* @var $form CActiveForm */
 
-Yii::app()->clientScript->registerScriptFile('jquery.js');
+Yii::app()->clientScript->registerScriptFile('jquery.min.js');
 
 $ct = new CodeTable();
 ?>

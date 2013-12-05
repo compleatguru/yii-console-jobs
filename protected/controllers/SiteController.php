@@ -214,7 +214,9 @@ sig2: SHA1(id=<panel_member_id>&email=<email>&dob=<dob>&d=<long_date>)
         Yii::app()->cache->flush();
 
         $ct = new CodeTable();
-        print_r($ct->getLanguageDescription('FR13'));
+        $out = $ct->getCountryPrefectureCity(array('HK','FR','US','SG'),array("12001002","12001004","03001009","03002009","03002028","03004013","06001000"));
+        echo json_encode($out);
+//        print_r($ct->getLanguageDescription('FR13'));
 //        print_r($ct->data(CodeTable::COUNTRY_PREFECTURE));
 //        $codeTable->data(CodeTable::COUNTRIES);
 //        print_r($ct->data(CodeTable::MARRIAGE));

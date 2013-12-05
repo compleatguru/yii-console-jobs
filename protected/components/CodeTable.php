@@ -314,4 +314,42 @@ class CodeTable extends CComponent {
         return null;        
     }
 
+    public function getCountryPrefectureCity($countryId,$cityId){
+        $found = array();
+        if(is_array($countryId)){
+            foreach ($countryId as $country) {
+                $data = $this->data(self::COUNTRY_PREFECTURE, $country);
+                $found[$country] = array_values($data);
+            }
+        }
+        else $found[$countryId]=$this->data(self::COUNTRY_PREFECTURE, $countryId);
+
+        $result = array();
+        if(is_array($cityId)){
+            foreach($cityId as $selectedCityId){
+                foreach($found as $country_id => $prefectures){
+                    foreach($prefectures as $prefecture){
+                        foreach($prefecture['city'] as $city){
+                            if(isset($city[$selectedCityId])){
+                                $result[$country_id][$prefecture['id']][]=$selectedCityId;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            foreach($found as $country_id => $prefectures){
+                    foreach($prefectures as $prefecture){
+                        foreach($prefecture['city'] as $city){
+                            if(isset($city[$cityId])){
+                                $result[$country_id][$prefecture['id']][]=$cityId;
+                            }
+                        }
+                    }
+                }
+        }
+        return $result;
+    }
+
 }

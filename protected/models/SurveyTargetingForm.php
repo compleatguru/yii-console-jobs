@@ -26,6 +26,7 @@ class SurveyTargetingForm extends CFormModel {
     public $age_max;
     public $sample;
     private $creativeProjectCountryLanguage = array();
+    private $country_prefecture_city;
 
     /**
      * Declares the validation rules.
@@ -33,7 +34,8 @@ class SurveyTargetingForm extends CFormModel {
     public function rules() {
         return array(
             // required attributes
-            array('creative_project_id', 'required', 'on' => 'update'),
+            array('creative_project_id,prefecture_city', 'required', 'on' => 'update'),
+            array('prefecture_city','validatePrefectureCity'),
             array('country, language, title, prefecture, city, prefecture_city, gender, marital_status, age_min, age_max, sample', 'safe'),
             array('age_min', 'compare', 'compareAttribute' => 'age_max', 'operator' => '<='),
             array('age_max', 'compare', 'compareAttribute' => 'age_min', 'operator' => '>='),
@@ -131,6 +133,7 @@ class SurveyTargetingForm extends CFormModel {
     }
 
     public function saveTargetingCondition($currentModel = null) {
+        $ct = new CodeTable;
 
         $model = new CreativeProjectTargetCondition;
         $attributes = $model->CategoryList;
@@ -149,9 +152,16 @@ class SurveyTargetingForm extends CFormModel {
                     break;
                 case 'city':
                     $this->$attribute = $this->prefecture_city;
+                    break;
+                case 'country_prefecture_city':
+                    $this->$attribute = $ct->getCountryPrefectureCity($this->country, $this->prefecture_city);
+                    break;
             }
 
-            $value = $this->convertCSV($attribute);
+            if ($attribute != 'country_prefecture_city')
+                $value = $this->convertCSV($attribute);
+            else
+                $value = json_encode($this->$attribute);
 
 
             Yii::log('Attribute ' . $attribute);
@@ -173,8 +183,6 @@ class SurveyTargetingForm extends CFormModel {
                     $model = $result;
                 }
             }
-
-
 
             // insert / update
             if (!empty($value)) {
@@ -299,6 +307,17 @@ class SurveyTargetingForm extends CFormModel {
                     $model->delete();
                 }
             }
+        }
+    }
+
+    public function validatePrefectureCity($attribute,$params){
+        if($attribute != 'prefecture_city') return;
+
+        $ct = new CodeTable;
+        $country_prefecture_city = $ct->getCountryPrefectureCity($this->country, $this->prefecture_city);
+
+        foreach($this->country as $country){
+            if(!isset($country_prefecture_city[$country])) $this->addError ($attribute, 'Missing prefecture and city of '.$ct->country($country));            
         }
     }
 

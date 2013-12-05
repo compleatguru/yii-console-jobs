@@ -142,7 +142,7 @@ return array(
                     'class' => 'CWebLogRoute',
 //                    'enabled'=>YII_DEBUG,
                      'levels' => 'error, warning,trace, info',
-                    'showInFireBug'=>false
+                    'showInFireBug'=>true
                 ),
             ),
         ),

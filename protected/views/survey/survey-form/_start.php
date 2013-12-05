@@ -41,7 +41,7 @@ $cs->registerCss('_init_multi', "
     width: 18%;
 }
             ")
-        ->registerScriptFile('jquery.js', CClientScript::POS_HEAD)
+        ->registerScriptFile('jquery.min.js', CClientScript::POS_HEAD)
         ->registerScriptFile('jquery-ui.min.js', CClientScript::POS_HEAD)
         ->registerScriptFile('knockout.js', CClientScript::POS_HEAD);
 
